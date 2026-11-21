@@ -72,3 +72,12 @@ images-src/     original photos (source of truth)
 ```
 
 The Google Map only loads after the visitor clicks **Load map**, so no Google request is made without consent.
+
+## Deployment
+
+Hosted on Vercel, connected to this GitHub repository:
+
+- **Live site:** https://nail-salon-website-swart.vercel.app
+- Every push to `main` deploys to production; pushes to other branches and pull requests get preview URLs.
+- Vercel detects Vite automatically (build: `npm run build`, output: `dist`). No environment variables are required.
+  To connect a booking backend, add `VITE_BOOKING_ENDPOINT` under Project → Settings → Environment Variables and redeploy.
