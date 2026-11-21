@@ -1,0 +1,108 @@
+.shades {
+  padding-block: var(--section-y);
+  background: var(--shade, var(--butter));
+  color: var(--shade-ink, var(--plum));
+  transition:
+    background-color 700ms var(--ease-out),
+    color 700ms var(--ease-out);
+}
+
+.shades__inner {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  align-items: center;
+}
+
+.shades__title {
+  font-size: clamp(3.2rem, 1.2rem + 8vw, 9rem);
+}
+.shades__text {
+  max-width: 30rem;
+  margin-top: 1.5rem;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.shades__picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2.25rem;
+}
+.swatch {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4.6rem;
+  border: 0;
+  border-radius: var(--r-arch);
+  background: var(--paper);
+  box-shadow: 0 0 0 0 var(--shade-ink, var(--plum));
+  transition:
+    transform var(--dur-med) var(--ease-pop),
+    box-shadow var(--dur-fast) ease;
+}
+.swatch svg {
+  transition: transform var(--dur-med) var(--ease-pop);
+}
+.swatch svg path {
+  stroke: rgba(73, 52, 71, 0.25);
+  stroke-width: 1;
+}
+.swatch[aria-checked='true'] {
+  box-shadow: 0 0 0 3px var(--shade-ink, var(--plum));
+  transform: translateY(-6px);
+}
+.swatch[aria-checked='true'] svg {
+  transform: rotate(-12deg) scale(1.08);
+}
+@media (hover: hover) {
+  .swatch:not([aria-checked='true']):hover {
+    transform: translateY(-3px) rotate(-4deg);
+  }
+}
+.swatch:focus-visible {
+  outline-color: var(--shade-ink, var(--plum));
+  outline-offset: 5px;
+}
+
+.shades__current {
+  margin-top: 1.5rem;
+  font-weight: 600;
+}
+.shades__current strong {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.shades__cta {
+  margin-top: 1.75rem;
+  --btn-bg: var(--shade-ink, var(--plum));
+  --btn-fg: var(--shade, var(--butter));
+  --btn-bg-hover: var(--paper);
+  --btn-fg-hover: var(--plum);
+}
+
+.shades__figure {
+  width: min(78%, 26rem);
+  justify-self: center;
+  transform: rotate(3deg);
+  box-shadow: 0 30px 50px -30px rgba(73, 52, 71, 0.6);
+}
+.shades__figure img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+@media (min-width: 1024px) {
+  .shades__inner {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  }
+  .shades__figure {
+    width: 100%;
+    justify-self: end;
+  }
+}

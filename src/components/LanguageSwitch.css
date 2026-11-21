@@ -1,0 +1,36 @@
+/* Segmented pill: the active language sits in a coloured lozenge */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem;
+  border-radius: var(--r-pill);
+  background: rgba(73, 52, 71, 0.07);
+}
+.lang-switch__item {
+  display: inline-flex;
+}
+.lang-switch__sep {
+  display: none;
+}
+.lang-switch__btn {
+  min-width: 2.75rem;
+  min-height: 2.35rem;
+  padding: 0 0.7rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 800;
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+.lang-switch__btn[aria-pressed='true'] {
+  background: var(--plum);
+  color: var(--paper);
+}
+@media (hover: hover) {
+  .lang-switch__btn:not([aria-pressed='true']):hover {
+    background: rgba(73, 52, 71, 0.1);
+  }
+}

@@ -1,0 +1,220 @@
+/**
+ * Hungarian copy (default language). This file defines the shape every other
+ * language must follow, so TypeScript reports any missing translation.
+ */
+const hu = {
+  meta: {
+    title: 'Mira Nail Atelier | Körömszalon Szeged belvárosában',
+    description:
+      'Zselé lakk, műköröm, builder gél, manikűr és egyedi nail art Szegeden. Színes, kreatív, aprólékos munka. Foglalj időpontot online.',
+  },
+  skipLink: 'Ugrás a tartalomhoz',
+  brandTagline: 'nail atelier',
+  nav: {
+    about: 'Stúdió',
+    services: 'Árak',
+    gallery: 'Munkáink',
+    contact: 'Kapcsolat',
+    book: 'Foglalás',
+    openMenu: 'Menü megnyitása',
+    closeMenu: 'Menü bezárása',
+    language: 'Nyelv',
+    instagram: 'Instagram',
+    home: 'Mira Nail Atelier, vissza az oldal tetejére',
+  },
+  hero: {
+    kicker: 'Körömszalon Szeged belvárosában',
+    titleLines: ['Apró', 'műalkotások', 'a kezeden.'],
+    lead: 'Zselé lakk, épített köröm és kézzel festett nail art. Színesen, precízen, a te ötletedből.',
+    cta: 'Időpontot foglalok',
+    secondary: 'Nézd meg a munkáinkat',
+    imageAlt: 'Két kéz élénk, kézzel festett absztrakt mintás körmökkel',
+    secondAlt: 'Hosszú, kobaltkék mandula körmök ezüst francia véggel',
+    sticker: 'Foglalj időpontot • Szeged • Mira • ',
+  },
+  marquee: ['Zselé lakk', 'Króm', 'Francia', '3D díszítés', 'Builder gél', 'Kézzel festett minták', 'Kövek és kristályok'],
+  about: {
+    heading: 'Egy kis stúdió nagy ötletekhez',
+    lead: 'A Mira egy nyugodt, napfényes körömszalon Szeged belvárosában. Egyszerre egy vendéggel foglalkozunk, így minden szettre jut idő.',
+    body: 'A szép köröm az előkészítésnél kezdődik: gondos kutikulaápolás, pontos formázás, minőségi anyagok. Utána jöhet a játék: színek, formák, textúrák, a visszafogott nude-tól a teljesen egyedi művészi mintákig.',
+    values: [
+      { title: 'Minőség', text: 'Professzionális termékek, minden vendégnél sterilizált eszközök.' },
+      { title: 'Precizitás', text: 'Egyenletes ív, tiszta kutikulavonal, hetekig tartó eredmény.' },
+      { title: 'Kreativitás', text: 'Hozd az ötleted, mi megtaláljuk hozzá a formát és a színt.' },
+      { title: 'Figyelem', text: 'Egy vendég, egy szakember, sietség nélkül.' },
+    ],
+    imageAlt: 'Világos stúdióbelső: boltíves fülke körömlakkos polcokkal, két pálmanövény',
+    detailAlt: 'Manikűr eszközök lenvásznon: olló, reszelő, kutikulatoló',
+  },
+  services: {
+    heading: 'Szolgáltatások és árak',
+    intro:
+      'Az árak tájékoztató jellegűek; a végső ár a hossztól és a díszítéstől függ. Ha nem tudod, mit válassz, írd le a foglalásnál, és segítünk.',
+    currency: 'Ft',
+    fromPrefix: '',
+    fromSuffix: '-tól',
+    perNail: '/ köröm',
+    duration: (minutes: number) => {
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      if (!h) return `${m} perc`;
+      return m ? `${h} óra ${m} perc` : `${h} óra`;
+    },
+    priceLabel: 'Ár',
+    durationLabel: 'Időtartam',
+    book: 'Ezt kérem',
+    bookAria: (name: string) => `${name} foglalása`,
+    items: {
+      gel: {
+        name: 'Zselé lakk',
+        desc: 'Tartós, fényes szín a saját körmödön, akár három-négy hétig. Formázással és kutikulaápolással.',
+      },
+      extensions: {
+        name: 'Műköröm építés',
+        desc: 'Zselés hosszabbítás sablonra építve, a kívánt formában: mandula, kocka, balerina vagy stiletto.',
+      },
+      builder: {
+        name: 'Builder gél',
+        desc: 'Erősítő réteg a természetes körmön, hogy törés nélkül növeszthesd.',
+      },
+      classic: {
+        name: 'Klasszikus manikűr',
+        desc: 'Formázás, kutikulaápolás, kézmasszázs és tápláló olaj.',
+      },
+      art: {
+        name: 'Egyedi nail art',
+        desc: 'Francia, króm, ombré, kézzel festett minták és kövek. Bármelyik szolgáltatás mellé.',
+        duration: 'A díszítéstől függ',
+      },
+      special: {
+        name: 'Különleges designok',
+        desc: 'Összetett, többrétegű munkák 3D elemekkel, kristályokkal vagy aprólékos festéssel, előzetes egyeztetéssel.',
+      },
+    } as Record<string, { name: string; desc: string; duration?: string }>,
+  },
+  gallery: {
+    heading: 'Munkáink',
+    intro: 'Válogatás a stúdióban készült szettekből. Kattints bármelyikre a nagyításhoz.',
+    filterLabel: 'Szűrés stílus szerint',
+    all: 'Összes',
+    categories: {
+      french: 'Francia',
+      chrome: 'Króm',
+      art: 'Nail art',
+      nude: 'Nude',
+      sculpted: 'Épített',
+      seasonal: 'Szezonális',
+    },
+    enlarge: (caption: string) => `Nagyítás: ${caption}`,
+    igTitle: 'Még több az Instagramon',
+    igText: 'Friss szettek minden héten.',
+    lightbox: {
+      label: 'Képnézegető',
+      close: 'Bezárás',
+      prev: 'Előző kép',
+      next: 'Következő kép',
+      counter: (i: number, n: number) => `${i} / ${n}`,
+    },
+  },
+  shades: {
+    heading: 'Válassz színt.',
+    text: 'Több száz árnyalat vár a polcainkon. Kattints egy színre, és foglalásnál már tudni fogjuk, mivel kezdjük.',
+    pickerLabel: 'Árnyalatok',
+    current: 'Kiválasztva',
+    cta: 'Ezzel a színnel foglalok',
+    imageAlt: 'Három körömlakkos üveg, a lakk lefolyik a kőtalapzaton',
+    names: {
+      butter: 'Vajsárga',
+      lavender: 'Levendula köd',
+      sage: 'Zsálya',
+      powder: 'Púderrózsa',
+      nude: 'Tejeskávé nude',
+      plum: 'Mély szilva',
+    } as Record<string, string>,
+  },
+  booking: {
+    heading: 'Foglalj időpontot',
+    intro: 'Pár kattintás az egész. Egy munkanapon belül visszaigazoljuk telefonon vagy e-mailben.',
+    stepsLabel: 'Így működik',
+    steps: ['Válassz szolgáltatást és időpontot.', 'Egy munkanapon belül visszaigazoljuk.', 'Gyere, és dőlj hátra.'],
+    alternative: 'Inkább beszélnél velünk?',
+    alternativeCall: 'Hívj minket',
+    alternativeDm: 'Írj Instagramon',
+    form: {
+      label: 'Foglalási kérés',
+      name: 'Neved',
+      contact: 'E-mail vagy telefonszám',
+      contactHint: 'Ezen keresünk a visszaigazolással.',
+      service: 'Mit szeretnél?',
+      serviceUnsure: 'Még nem tudom',
+      date: 'Melyik napon?',
+      time: 'Hánykor?',
+      timeNeedsDate: 'Válassz előbb egy napot, és megmutatjuk a szabad időpontokat.',
+      timeClosed: 'Ezen a napon zárva vagyunk.',
+      openDays: 'Keddtől szombatig vagyunk nyitva.',
+      message: 'Üzenet vagy designötlet',
+      optional: 'nem kötelező',
+      messageHint: 'Írd le az elképzelésed, vagy illessz be egy linket egy inspirációs képhez.',
+      shadeLine: (shade: string) => `Kiválasztott szín: ${shade}`,
+      consent: 'Hozzájárulok, hogy az adataimat az időpont egyeztetéséhez felhasználjátok.',
+      submit: 'Foglalási kérés küldése',
+      sending: 'Küldés…',
+    },
+    errors: {
+      summary: 'Néhány mezőt még javítani kell.',
+      name: 'Add meg a neved.',
+      contactRequired: 'Add meg az e-mail-címed vagy a telefonszámod.',
+      contactInvalid: 'Ez nem érvényes e-mail-cím vagy telefonszám.',
+      service: 'Válassz szolgáltatást.',
+      date: 'Válassz dátumot.',
+      dateTooEarly: 'A legkorábbi foglalható nap holnap.',
+      dateClosed: 'Ezen a napon zárva vagyunk. Válassz keddtől szombatig.',
+      time: 'Válassz időpontot.',
+      consent: 'A foglaláshoz szükség van a hozzájárulásodra.',
+    },
+    sent: {
+      title: 'Megkaptuk a kérésed!',
+      text: 'Ez még nem végleges időpont. Egy munkanapon belül jelentkezünk a visszaigazolással a megadott elérhetőségen.',
+      again: 'Újabb kérés küldése',
+    },
+    notConnected: {
+      title: 'Az online foglalás még nincs bekapcsolva',
+      text: 'Ezért a kérésed még nem ment el. Küldd el nekünk e-mailben (előre kitöltöttük helyetted), vagy hívj minket.',
+      email: 'Küldés e-mailben',
+      call: 'Hívás',
+      back: 'Vissza az űrlaphoz',
+    },
+    failed: 'Nem sikerült elküldeni a kérést. Próbáld újra, vagy hívj minket.',
+    mail: {
+      subject: (name: string) => `Foglalási kérés: ${name}`,
+      greeting: 'Sziasztok!\n\nSzeretnék időpontot foglalni:',
+    },
+  },
+  contact: {
+    heading: 'Gyere be hozzánk',
+    intro: 'Szeged belvárosában, pár percre a Dóm tértől. Csak előzetes bejelentkezéssel fogadunk vendégeket.',
+    address: 'Cím',
+    phone: 'Telefon',
+    email: 'E-mail',
+    instagram: 'Instagram',
+    hours: 'Nyitvatartás',
+    today: 'ma',
+    closed: 'Zárva',
+    days: ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'],
+    map: {
+      title: 'Térkép: Mira Nail Atelier, Szeged',
+      notice: 'A térkép a Google Maps szolgáltatásból töltődik be, ilyenkor a Google adatokat gyűjthet.',
+      load: 'Térkép betöltése',
+      directions: 'Útvonaltervezés',
+    },
+  },
+  footer: {
+    cta: 'Jöhet egy új szett?',
+    ctaButton: 'Időpontot foglalok',
+    rights: (year: number) => `© ${year} Mira Nail Atelier. Minden jog fenntartva.`,
+    backToTop: 'Vissza az oldal tetejére',
+  },
+};
+
+export type Dictionary = typeof hu;
+export default hu;

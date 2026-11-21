@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mira Nail Atelier | Körömszalon Szeged belvárosában</title>
+    <meta
+      name="description"
+      content="Zselé lakk, műköröm, builder gél, manikűr és egyedi nail art Szegeden. Precíz, személyre szabott munka nyugodt környezetben. Foglalj időpontot online."
+    />
+    <meta name="theme-color" content="#fff9f3" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Set to the live domain before launch -->
+    <link rel="canonical" href="https://www.miranailatelier.hu/" />
+    <link rel="alternate" hreflang="hu" href="https://www.miranailatelier.hu/" />
+    <link rel="alternate" hreflang="en" href="https://www.miranailatelier.hu/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://www.miranailatelier.hu/" />
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mira Nail Atelier" />
+    <meta property="og:title" content="Mira Nail Atelier | Körömszalon Szegeden" />
+    <meta property="og:description" content="Precíz, személyre szabott körömdesign Szeged belvárosában." />
+    <meta property="og:image" content="/images/gal-handpainted-abstract-1200.webp" />
+    <meta property="og:locale" content="hu_HU" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Manrope:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- Hero image: start downloading before the JS runs -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      imagesrcset="/images/gal-handpainted-abstract-480.webp 480w, /images/gal-handpainted-abstract-800.webp 800w, /images/gal-handpainted-abstract-1200.webp 1200w, /images/gal-handpainted-abstract-1800.webp 1800w"
+      imagesizes="(min-width: 1024px) 34vw, 70vw"
+      fetchpriority="high"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "NailSalon",
+        "name": "Mira Nail Atelier",
+        "image": "/images/gal-handpainted-abstract-1200.webp",
+        "url": "https://www.miranailatelier.hu/",
+        "telephone": "+36 30 000 0000",
+        "email": "hello@miranailatelier.hu",
+        "priceRange": "6000–18000 Ft",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Kárász utca 00.",
+          "postalCode": "6720",
+          "addressLocality": "Szeged",
+          "addressCountry": "HU"
+        },
+        "openingHoursSpecification": [
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday", "Wednesday", "Friday"], "opens": "09:00", "closes": "19:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": "Thursday", "opens": "10:00", "closes": "20:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "14:00" }
+        ],
+        "sameAs": ["https://www.instagram.com/miranailatelier"]
+      }
+    </script>
+    <style>
+      /* Paint the brand colours before CSS/JS arrive */
+      html { background: #fff9f3; }
+      body { margin: 0; background: #fff9f3; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: serif">
+        Mira Nail Atelier, Kárász utca 00., 6720 Szeged. Tel.: +36 30 000 0000. hello@miranailatelier.hu
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

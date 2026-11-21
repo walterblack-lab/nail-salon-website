@@ -1,0 +1,137 @@
+.site-footer {
+  position: relative;
+  padding-top: clamp(3.5rem, 7vw, 6rem);
+  background: var(--plum);
+  color: var(--paper);
+  overflow: hidden;
+}
+
+.site-footer__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+}
+.site-footer__cta-text {
+  max-width: 12ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 1.2rem + 4.5vw, 5.5rem);
+  font-weight: 700;
+  font-variation-settings: 'wdth' 80;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+}
+
+.site-footer__mid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.site-footer__nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.45rem 1rem;
+  border-radius: var(--r-pill);
+  background: rgba(255, 249, 243, 0.08);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    transform var(--dur-med) var(--ease-pop);
+}
+.site-footer__nav svg {
+  transform: rotate(-14deg);
+}
+@media (hover: hover) {
+  .site-footer__nav a:hover {
+    background: var(--paper);
+    color: var(--plum);
+    transform: rotate(-2deg);
+  }
+}
+
+.site-footer__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+.site-footer__ig {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.site-footer .lang-switch {
+  background: rgba(255, 249, 243, 0.1);
+}
+.site-footer .lang-switch__btn[aria-pressed='true'] {
+  background: var(--butter);
+  color: var(--plum);
+}
+.site-footer :focus-visible {
+  outline-color: var(--butter);
+}
+
+.site-footer__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  margin-top: 2rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 249, 243, 0.72);
+}
+
+/* Oversized wordmark that runs off the bottom of the page */
+.site-footer__mark {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: -0.2em;
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 38vw, 34rem);
+  font-weight: 800;
+  font-variation-settings: 'wdth' 75;
+  letter-spacing: -0.06em;
+  line-height: 0.72;
+  color: var(--lavender);
+  text-decoration: none;
+  transition: color 600ms var(--ease-out);
+}
+.site-footer__mark-nail {
+  width: 0.22em;
+  height: auto;
+  margin: 0 0 0.62em 0.02em;
+  transform: rotate(18deg);
+  transition: transform 700ms var(--ease-pop);
+}
+@media (hover: hover) {
+  .site-footer__mark:hover {
+    color: var(--powder);
+  }
+  .site-footer__mark:hover .site-footer__mark-nail {
+    transform: rotate(-12deg) scale(1.1);
+  }
+}
+.site-footer__mark:focus-visible {
+  outline-offset: -8px;
+}

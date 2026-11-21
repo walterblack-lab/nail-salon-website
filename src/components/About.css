@@ -1,0 +1,146 @@
+.about {
+  position: relative;
+  padding-block: var(--section-y);
+  background: var(--sage);
+  overflow: hidden;
+}
+
+.about__layout {
+  display: grid;
+  gap: 0;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+}
+
+/* Large photograph: bleeds off the left edge */
+.about__photo {
+  margin-right: var(--gutter);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  overflow: hidden;
+}
+.about__photo img {
+  width: 100%;
+  aspect-ratio: 4 / 4.4;
+  object-fit: cover;
+  object-position: 50% 55%;
+}
+
+/* Contrasting plum panel overlapping the photo */
+.about__panel {
+  position: relative;
+  z-index: 1;
+  margin: -4rem var(--gutter) 0 calc(var(--gutter) * 2);
+  padding: clamp(1.75rem, 4vw, 3.5rem);
+  border-radius: var(--r-lg);
+  background: var(--plum);
+  color: var(--paper);
+}
+.about__title {
+  font-size: clamp(2.6rem, 1.4rem + 4vw, 5rem);
+}
+.about__lead {
+  margin-top: 1.5rem;
+}
+.about__body {
+  margin-top: 1.1rem;
+  max-width: 36rem;
+  color: rgba(255, 249, 243, 0.82);
+}
+
+.about__polaroid {
+  justify-self: end;
+  width: min(62%, 20rem);
+  margin: -1.5rem var(--gutter) 0 0;
+  padding: 0.6rem 0.6rem 2.6rem;
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: 0 24px 40px -22px rgba(73, 52, 71, 0.55);
+  position: relative;
+  z-index: 2;
+  transform: rotate(-5deg);
+}
+.about__polaroid img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.about__values {
+  display: grid;
+  gap: 1.75rem 2rem;
+  margin-top: 2.5rem;
+  padding-inline: var(--gutter);
+}
+.about__values li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+.about__value-mark {
+  margin-top: 0.15rem;
+  transform: rotate(-10deg);
+}
+.about__value-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.about__values p {
+  margin-top: 0.4rem;
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+@media (min-width: 640px) {
+  .about__values {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about__layout {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto auto;
+    column-gap: clamp(1rem, 2vw, 2rem);
+  }
+  .about__photo {
+    grid-column: 1 / 8;
+    grid-row: 1 / 3;
+    /* push the photo out to the viewport edge */
+    margin-left: calc((100vw - min(100vw, var(--container) + var(--gutter) * 2)) / -2);
+    margin-right: 0;
+  }
+  .about__photo img {
+    aspect-ratio: 5 / 5.2;
+  }
+  .about__panel {
+    grid-column: 7 / 13;
+    grid-row: 1 / 2;
+    align-self: start;
+    margin: clamp(3rem, 7vw, 6rem) var(--gutter) 0 0;
+  }
+  .about__polaroid {
+    grid-column: 6 / 9;
+    grid-row: 2 / 4;
+    align-self: end;
+    justify-self: center;
+    width: 100%;
+    margin: 0 0 -1rem;
+  }
+  .about__values {
+    grid-column: 9 / 13;
+    grid-row: 2 / 4;
+    grid-template-columns: 1fr;
+    align-self: center;
+    margin-top: 3rem;
+    padding-inline: 0 var(--gutter);
+  }
+}
+
+@media (min-width: 1280px) {
+  .about__values {
+    grid-template-columns: 1fr 1fr;
+  }
+}
