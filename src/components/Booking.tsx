@@ -32,9 +32,11 @@ const chipColors: Record<string, string> = {
 interface BookingProps {
   preselect: { id: ServiceId; nonce: number } | null;
   shadeRequest: { name: string; nonce: number } | null;
+  /** A nail-studio design summary; it is written into the message field for the visitor to review. */
+  designNote?: { text: string; nonce: number } | null;
 }
 
-export function Booking({ preselect, shadeRequest }: BookingProps) {
+export function Booking({ preselect, shadeRequest, designNote = null }: BookingProps) {
   const { t, lang } = useI18n();
   const f = t.booking.form;
   const uid = useId();
@@ -70,6 +72,34 @@ export function Booking({ preselect, shadeRequest }: BookingProps) {
     setStatus('idle');
     setShade(shadeRequest.name);
   }
+  const [seenDesign, setSeenDesign] = useState<number | null>(null);
+  const [lastDesignText, setLastDesignText] = useState<string | null>(null);
+  if (designNote && designNote.nonce !== seenDesign) {
+    setSeenDesign(designNote.nonce);
+    setStatus('idle');
+    setLastDesignText(designNote.text);
+    setValues((v) => {
+      // Replace an earlier studio note instead of stacking copies; keep anything the visitor wrote.
+      const own = lastDesignText ? v.message.replace(lastDesignText, '').trim() : v.message.trim();
+      // A designed set is custom nail art, unless the visitor already chose a service.
+      return { ...v, service: v.service || 'special', message: own ? `${own}\n\n${designNote.text}` : designNote.text };
+    });
+    setErrors((e) => ({ ...e, service: undefined }));
+  }
+
+  // Show the visitor where their design went: bring the message field into view and focus it.
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (seenDesign === null) return;
+    const el = messageRef.current;
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const id = setTimeout(() => {
+      el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+      el.focus({ preventScroll: true });
+    }, 60);
+    return () => clearTimeout(id);
+  }, [seenDesign]);
 
   useEffect(() => {
     if (status !== 'idle' && status !== 'sending') statusRef.current?.focus();
@@ -370,15 +400,16 @@ export function Booking({ preselect, shadeRequest }: BookingProps) {
                   </p>
                 )}
                 <textarea
+                  ref={messageRef}
                   id={id('message')}
                   name="message"
-                  rows={3}
+                  rows={lastDesignText && values.message.includes(lastDesignText) ? 7 : 3}
                   value={values.message}
                   onChange={(e) => update('message', e.target.value)}
                   aria-describedby={id('message-hint')}
                 />
                 <p className="field__hint" id={id('message-hint')}>
-                  {f.messageHint}
+                  {lastDesignText && values.message.includes(lastDesignText) ? t.studio.noteAdded : f.messageHint}
                 </p>
               </div>
 

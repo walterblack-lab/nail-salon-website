@@ -6,8 +6,8 @@ import { LanguageSwitch } from './LanguageSwitch';
 import { NailMark } from './NailMark';
 import './Header.css';
 
-const sections = ['about', 'services', 'gallery', 'contact'] as const;
-const menuColors = ['var(--butter)', 'var(--paper)', 'var(--sage)', 'var(--powder)'];
+const sections = ['about', 'services', 'gallery', 'studio', 'contact'] as const;
+const menuColors = ['var(--butter)', 'var(--paper)', 'var(--sage)', 'var(--plum)', 'var(--powder)'];
 
 export function Header() {
   const { t } = useI18n();
