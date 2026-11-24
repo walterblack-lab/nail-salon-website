@@ -1,42 +1,61 @@
 import { memo, useId, type CSSProperties, type Ref } from 'react';
 import type { Manicure, NailDesign, Target } from './model';
-import { FINGER_SPECS, fingerPath, nailAnchor, nailLength, nailPath, VIEW, type FingerSpec } from './geometry';
+import { nailLength, nailPath, VIEW } from './geometry';
+import {
+  centreLine,
+  DIGITS,
+  digitFrame,
+  digitOutline,
+  handOutline,
+  jointCreases,
+  nailPlacement,
+  nailWidthFor,
+  PREVIEW_DIGIT,
+} from './anatomy';
 import { Nail, StudioDefs } from './Nail';
 import type { SkinTone } from './skin';
 
-/** The palm and back of the hand, wrist running off the bottom edge. */
-const PALM =
-  'M236 800 C228 724 214 668 196 636 C182 612 176 560 182 500 C186 450 192 412 204 390' +
-  ' C232 360 300 352 350 366 C392 378 424 398 430 430 C438 480 432 560 420 620 C408 690 392 744 384 800 Z';
+/* The hand never changes shape, so its geometry is computed once. */
+const OUTLINE = handOutline();
+const NAIL_W = DIGITS.map((d, i) => nailWidthFor(d, i === 0));
+const PLACES = DIGITS.map((d, i) => nailPlacement(d, NAIL_W[i]));
+const DIGIT_OUTLINES = DIGITS.map((d, i) => digitOutline(d, i === 0 ? 0.42 : d.web));
+const RIDGES = DIGITS.map((d, i) => centreLine(d, i === 0 ? 0.12 : 0.04, 0.86));
+const CREASES = DIGITS.map((d) => [...jointCreases(d, d.joints[0], 3), ...jointCreases(d, d.joints[1], 2, 2.8)]);
+const FRAMES = DIGITS.map(digitFrame);
 
-const FINGER_PATHS = FINGER_SPECS.map(fingerPath);
-
-/** Draw order: thumb first, middle finger last so it sits on top where knuckles meet. */
-const ORDER = [0, 4, 3, 1, 2];
+/** Webs between neighbouring fingers, where a soft shadow gathers. */
+const WEBS = [1, 2, 3].map((i) => {
+  const a = DIGITS[i];
+  const b = DIGITS[i + 1];
+  const pa = FRAMES[i].at(a.web);
+  const pb = FRAMES[i + 1].at(b.web);
+  return { x: (pa[0] + pb[0]) / 2, y: (pa[1] + pb[1]) / 2 + 4, angle: (a.angle + b.angle) / 2 };
+});
 
 function SkinGradients({ g, skin }: { g: string; skin: SkinTone }) {
   return (
     <>
       <linearGradient id={`${g}-finger`} x1="0" y1="0" x2="1" y2="0">
         <stop offset="0" stopColor={skin.shadow} />
-        <stop offset="0.2" stopColor={skin.mid} />
+        <stop offset="0.22" stopColor={skin.mid} />
         <stop offset="0.5" stopColor={skin.light} />
-        <stop offset="0.8" stopColor={skin.mid} />
+        <stop offset="0.78" stopColor={skin.mid} />
         <stop offset="1" stopColor={skin.shadow} />
       </linearGradient>
-      <radialGradient id={`${g}-palm`} cx="0.5" cy="0.28" r="0.8">
-        <stop offset="0" stopColor={skin.light} />
-        <stop offset="0.55" stopColor={skin.mid} />
-        <stop offset="1" stopColor={skin.shadow} />
+      <radialGradient id={`${g}-palm`} gradientUnits="userSpaceOnUse" cx="300" cy="560" r="230">
+        <stop offset="0" stopColor={skin.light} stopOpacity="0.9" />
+        <stop offset="0.6" stopColor={skin.light} stopOpacity="0.25" />
+        <stop offset="1" stopColor={skin.light} stopOpacity="0" />
       </radialGradient>
     </>
   );
 }
 
-/** A finger in its local frame: skin, joint creases, the fingertip's warmth and the nail. */
-function Finger({
-  spec,
-  path,
+type Ring = 'none' | 'selected' | 'all' | 'target' | 'source';
+
+/** One nail on its digit: cuticle shading, the nail, its selection ring and a generous tap area. */
+function NailOnDigit({
   index,
   design,
   g,
@@ -44,82 +63,53 @@ function Finger({
   ring,
   onPick,
 }: {
-  spec: FingerSpec;
-  path: string;
   index: number;
   design: NailDesign;
   g: string;
   skin: SkinTone;
-  ring: 'none' | 'selected' | 'all' | 'target' | 'source';
-  onPick?: (i: number) => void;
+  ring: Ring;
+  onPick: (i: number) => void;
 }) {
-  const { len, widths } = spec;
-  const anchor = nailAnchor(spec);
-  const w = spec.nailW;
+  const w = NAIL_W[index];
   const L = nailLength(w);
+  const place = PLACES[index];
   const ringPath = nailPath(design.shape, w);
-  const crease = (t: number, hw: number, n: number) =>
-    Array.from({ length: n }, (_, k) => {
-      const y = -t * len - k * 3.2;
-      const s = hw * (0.55 - k * 0.12);
-      return <path key={`${t}-${k}`} d={`M${-s} ${y + 1.2} Q0 ${y - 2.2} ${s} ${y + 1.2}`} />;
-    });
-
   return (
-    <g transform={`translate(${spec.x} ${spec.y}) rotate(${spec.angle})`}>
-      <mask id={`${g}-fade-${index}`} maskUnits="userSpaceOnUse" x={-90} y={-len - 90} width={180} height={len + 160}>
-        <linearGradient id={`${g}-fadeg-${index}`} gradientUnits="userSpaceOnUse" x1="0" y1={len * 0.12} x2="0" y2={-len * 0.1}>
-          <stop offset="0" stopColor="#000" />
-          <stop offset="1" stopColor="#fff" />
-        </linearGradient>
-        <rect x={-90} y={-len - 90} width={180} height={len + 160} fill={`url(#${g}-fadeg-${index})`} />
-      </mask>
-
-      <g mask={`url(#${g}-fade-${index})`}>
-        <path d={path} fill={`url(#${g}-finger)`} />
-        {/* Warmth at the fingertip and a soft light down the ridge */}
-        <ellipse cx="0" cy={-len * 0.9} rx={widths[4] * 0.8} ry={widths[4] * 0.9} fill="#e07d7d" opacity="0.12" filter={`url(#${g}-softer)`} />
-        <path
-          d={`M${-widths[2] * 0.15} ${-len * 0.12} L${-widths[3] * 0.12} ${-len * 0.8}`}
-          stroke={skin.light}
-          strokeWidth={widths[2] * 0.5}
-          strokeLinecap="round"
-          opacity="0.35"
-          filter={`url(#${g}-softer)`}
-        />
-        <g fill="none" stroke={skin.crease} strokeWidth="1.1" strokeLinecap="round" opacity="0.42" filter={`url(#${g}-hair)`}>
-          {crease(0.4, widths[1], 3)}
-          {crease(0.73, widths[3], 2)}
-        </g>
-      </g>
-
-      <g
-        className={`ns-finger-nail${onPick ? ' is-pickable' : ''}`}
-        data-ring={ring}
-        style={{ '--i': index } as CSSProperties}
-        transform={`translate(${anchor.x} ${anchor.y})`}
-        onClick={onPick ? () => onPick(index) : undefined}
-      >
-        {/* Cuticle fold: the skin is a touch darker and rosier where it meets the nail */}
-        <path
-          d={`M${-w * 0.47} ${-w * 0.2} C${-w * 0.3} ${w * 0.16} ${w * 0.3} ${w * 0.16} ${w * 0.47} ${-w * 0.2}`}
-          fill="none"
-          stroke={skin.crease}
-          strokeWidth="3"
-          opacity="0.5"
-          filter={`url(#${g}-soft)`}
-        />
-        <Nail design={design} w={w} p={`${g}-n${index}`} g={g} seed={index + 3} />
-        <path
-          className="ns-shape ns-ring"
-          data-export="hide"
-          d={ringPath}
-          style={{ d: `path("${ringPath}")` } as CSSProperties}
-          transform={`translate(0 ${-L / 2}) scale(1.24 1.16) translate(0 ${L / 2})`}
-          vectorEffect="non-scaling-stroke"
-        />
-        <ellipse data-export="hide" className="ns-hit" cx="0" cy={-L * 0.42} rx={w * 1.0} ry={L * 0.78} />
-      </g>
+    <g
+      className="ns-finger-nail is-pickable"
+      data-ring={ring}
+      style={{ '--i': index } as CSSProperties}
+      transform={`translate(${place.x.toFixed(2)} ${place.y.toFixed(2)}) rotate(${place.angle.toFixed(2)})`}
+      onClick={() => onPick(index)}
+    >
+      {/* Eponychium: skin a touch rosier and darker where it folds over the nail */}
+      <path
+        d={`M${-w * 0.5} ${-w * 0.22} C${-w * 0.32} ${w * 0.17} ${w * 0.32} ${w * 0.17} ${w * 0.5} ${-w * 0.22}`}
+        fill="none"
+        stroke={skin.crease}
+        strokeWidth="3.2"
+        opacity="0.45"
+        filter={`url(#${g}-soft)`}
+      />
+      {/* Side walls: a faint shadow where the skin meets the nail's edges */}
+      <path
+        d={`M${-w * 0.55} ${-w * 0.08} L${-w * 0.55} ${-w * 0.58} M${w * 0.55} ${-w * 0.08} L${w * 0.55} ${-w * 0.58}`}
+        stroke={skin.shadow}
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        opacity="0.35"
+        filter={`url(#${g}-soft)`}
+      />
+      <Nail design={design} w={w} p={`${g}-n${index}`} g={g} seed={index + 3} />
+      <path
+        className="ns-shape ns-ring"
+        data-export="hide"
+        d={ringPath}
+        style={{ d: `path("${ringPath}")` } as CSSProperties}
+        transform={`translate(0 ${-L / 2}) scale(1.24 1.16) translate(0 ${L / 2})`}
+        vectorEffect="non-scaling-stroke"
+      />
+      <ellipse data-export="hide" className="ns-hit" cx="0" cy={-L * 0.42} rx={w * 1.0} ry={L * 0.78} />
     </g>
   );
 }
@@ -136,7 +126,7 @@ interface HandProps {
 
 export const Hand = memo(function Hand({ nails, target, skin, pasteFrom, onNailClick, label, svgRef }: HandProps) {
   const g = 'nsh';
-  const ringFor = (i: number) => {
+  const ringFor = (i: number): Ring => {
     if (pasteFrom !== null) return i === pasteFrom ? 'source' : 'target';
     if (target === 'all') return 'all';
     return target === i ? 'selected' : 'none';
@@ -155,53 +145,94 @@ export const Hand = memo(function Hand({ nails, target, skin, pasteFrom, onNailC
       <defs>
         <StudioDefs g={g} />
         <SkinGradients g={g} skin={skin} />
+        <clipPath id={`${g}-clip`}>
+          <path d={OUTLINE} />
+        </clipPath>
         <filter id={`${g}-drop`} x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="16" stdDeviation="18" floodColor="#1d0f1c" floodOpacity="0.5" />
+        </filter>
+        <filter id={`${g}-rim`} x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="7" />
+        </filter>
+        <filter id={`${g}-wide`} x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="9" />
         </filter>
       </defs>
 
       <g filter={`url(#${g}-drop)`}>
-        <path d={PALM} fill={`url(#${g}-palm)`} />
-        {/* Tendons and knuckles: the faint relief on the back of a hand */}
-        <g stroke={skin.light} strokeWidth="7" strokeLinecap="round" fill="none" opacity="0.22" filter={`url(#${g}-softer)`}>
-          {FINGER_SPECS.slice(1).map((s, i) => (
-            <path key={i} d={`M${s.x} ${s.y + 24} Q${(s.x + 306) / 2} ${(s.y + 700) / 2} ${306 + (i - 1.5) * 12} 790`} />
-          ))}
-        </g>
-        <g fill={skin.shadow} opacity="0.28" filter={`url(#${g}-softer)`}>
-          {[0, 1, 2].map((i) => {
-            const a = FINGER_SPECS[i + 1];
-            const b = FINGER_SPECS[i + 2];
-            return <ellipse key={i} cx={(a.x + b.x) / 2} cy={(a.y + b.y) / 2 + 22} rx="9" ry="16" />;
-          })}
+        {/* One continuous skin surface */}
+        <path d={OUTLINE} fill={skin.mid} />
+
+        <g clipPath={`url(#${g}-clip)`}>
+          {/* Light falls on the back of the hand from above */}
+          <rect x="120" y="330" width="380" height="470" fill={`url(#${g}-palm)`} />
+
+          {/* Each digit is a rounded form: light along its ridge */}
+          <g fill="none" stroke={skin.light} strokeLinecap="round" filter={`url(#${g}-softer)`}>
+            {RIDGES.map((d, i) => (
+              <path key={i} d={d} strokeWidth={DIGITS[i].widths[2][1] * (i === 0 ? 1 : 0.95)} opacity={i === 0 ? 0.45 : 0.55} />
+            ))}
+          </g>
+
+          {/* Thumb pad and the tendons fanning from the wrist */}
+          <ellipse cx="214" cy="640" rx="34" ry="62" fill={skin.light} opacity="0.4" transform="rotate(-30 214 640)" filter={`url(#${g}-wide)`} />
+          <g stroke={skin.light} strokeWidth="8" strokeLinecap="round" fill="none" opacity="0.2" filter={`url(#${g}-softer)`}>
+            {DIGITS.slice(1).map((d, i) => (
+              <path key={i} d={`M${d.root[0]} ${d.root[1] + 22} Q${(d.root[0] + 306) / 2} ${(d.root[1] + 700) / 2} ${300 + (i - 1.5) * 13} 790`} />
+            ))}
+          </g>
+
+          {/* Knuckles: a soft rise over each joint, small hollows between */}
+          <g fill={skin.light} opacity="0.34" filter={`url(#${g}-softer)`}>
+            {DIGITS.slice(1).map((d, i) => (
+              <ellipse key={i} cx={d.root[0]} cy={d.root[1] + 6} rx="14" ry="10" transform={`rotate(${d.angle} ${d.root[0]} ${d.root[1] + 6})`} />
+            ))}
+          </g>
+          <g fill={skin.shadow} opacity="0.45" filter={`url(#${g}-softer)`}>
+            {WEBS.map((w, i) => (
+              <ellipse key={i} cx={w.x} cy={w.y} rx="7" ry="17" transform={`rotate(${w.angle} ${w.x} ${w.y})`} />
+            ))}
+          </g>
+
+          {/* Joint creases: faint, short, the way they look on a cared-for hand */}
+          <g fill="none" stroke={skin.crease} strokeWidth="0.9" strokeLinecap="round" opacity="0.32" filter={`url(#${g}-hair)`}>
+            {CREASES.map((list, i) => list.map((d, k) => <path key={`${i}-${k}`} d={d} />))}
+          </g>
+
+          {/* Warmth in the fingertips */}
+          <g fill="#e0807d" opacity="0.14" filter={`url(#${g}-softer)`}>
+            {DIGITS.map((_, i) => {
+              const [x, y] = FRAMES[i].at(0.94);
+              const r = FRAMES[i].halfWidth(0.94);
+              return <circle key={i} cx={x} cy={y} r={r * 0.85} />;
+            })}
+          </g>
+
+          {/* Turning edges: every contour darkens as it rounds away from the light */}
+          <path d={OUTLINE} fill="none" stroke={skin.shadow} strokeWidth="20" opacity="0.85" filter={`url(#${g}-rim)`} />
+          <path d={OUTLINE} fill="none" stroke={skin.crease} strokeWidth="2.2" opacity="0.35" filter={`url(#${g}-hair)`} />
         </g>
 
-        {ORDER.map((i) => (
-          <Finger
-            key={i}
-            spec={FINGER_SPECS[i]}
-            path={FINGER_PATHS[i]}
-            index={i}
-            design={nails[i]}
-            g={g}
-            skin={skin}
-            ring={ringFor(i)}
-            onPick={onNailClick}
-          />
+        {/* Tapping anywhere on a finger picks its nail */}
+        <g data-export="hide">
+          {DIGIT_OUTLINES.map((d, i) => (
+            <path key={i} d={d} className="ns-finger-hit" onClick={() => onNailClick(i)} />
+          ))}
+        </g>
+
+        {DIGITS.map((_, i) => (
+          <NailOnDigit key={i} index={i} design={nails[i]} g={g} skin={skin} ring={ringFor(i)} onPick={onNailClick} />
         ))}
-
-        {/* Knuckle highlights sit over the finger bases */}
-        <g fill={skin.light} opacity="0.4" filter={`url(#${g}-softer)`}>
-          {FINGER_SPECS.slice(1).map((s, i) => (
-            <ellipse key={i} cx={s.x + 2} cy={s.y + 10} rx="15" ry="10" />
-          ))}
-        </g>
       </g>
     </svg>
   );
 });
 
 /** A single nail on a fingertip, for option tiles and the nail selector. */
+const PREVIEW_W = 36;
+const PREVIEW_OUTLINE = digitOutline(PREVIEW_DIGIT, -0.2);
+const PREVIEW_PLACE = nailPlacement(PREVIEW_DIGIT, PREVIEW_W);
+
 export const NailPreview = memo(function NailPreview({
   design,
   skin,
@@ -214,8 +245,6 @@ export const NailPreview = memo(function NailPreview({
   seed?: number;
 }) {
   const g = 'nsp' + useId().replace(/[^a-zA-Z0-9]/g, '');
-  const spec: FingerSpec = { x: 0, y: 0, angle: 0, len: 100, widths: [25, 25, 25, 24.5, 24], nailW: 36 };
-  const anchor = nailAnchor(spec);
   return (
     <svg className="ns-preview" viewBox="-34 -140 68 112" aria-hidden="true" focusable="false">
       <defs>
@@ -229,10 +258,11 @@ export const NailPreview = memo(function NailPreview({
           <rect x="-40" y="-140" width="80" height="112" fill={`url(#${g}-stubfade)`} />
         </mask>
       </defs>
-      <path d={fingerPath(spec)} fill={`url(#${g}-finger)`} mask={`url(#${g}-stub)`} />
-      <g transform={`translate(0 ${anchor.y})`}>
-        <Nail design={design} w={spec.nailW} p={`${g}-n`} g={g} showGems={showGems} seed={seed} />
+      <path d={PREVIEW_OUTLINE} fill={`url(#${g}-finger)`} mask={`url(#${g}-stub)`} />
+      <g transform={`translate(0 ${PREVIEW_PLACE.y.toFixed(2)})`}>
+        <Nail design={design} w={PREVIEW_W} p={`${g}-n`} g={g} showGems={showGems} seed={seed} />
       </g>
     </svg>
   );
 });
+
