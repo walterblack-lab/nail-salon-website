@@ -9,7 +9,6 @@ required), to be replaced with the salon's own work. Overwrite a file with the s
 | about-interior.jpg | Alona Gross | https://unsplash.com/photos/qtoMPyiIBPA |
 | about-detail.jpg | Ksenia Pixelesse | https://unsplash.com/photos/vZrRwTOrIL0 |
 | shelf-polish.jpg | H&CO | https://unsplash.com/photos/OpjlRo-31SI |
-| booking-still.jpg | Maria Lupan | https://unsplash.com/photos/STW4T8mL9eE |
 | svc-gel.jpg | Chelson Tamares | https://unsplash.com/photos/SyCC0GQi5S4 |
 | svc-extensions.jpg | Margarita Yutsaytis | https://unsplash.com/photos/v3-AHQ63Wws |
 | svc-art.jpg | Ari Kurniawan | https://unsplash.com/photos/v9agFscJCIE |

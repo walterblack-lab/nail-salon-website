@@ -24,13 +24,6 @@ export const images = {
     "srcSet": "/images/about-interior-480.webp 480w, /images/about-interior-800.webp 800w, /images/about-interior-1200.webp 1200w, /images/about-interior-1800.webp 1800w, /images/about-interior-2400.webp 2400w",
     "color": "#b8a898"
   },
-  "booking-still": {
-    "width": 2400,
-    "height": 2620,
-    "src": "/images/booking-still-800.webp",
-    "srcSet": "/images/booking-still-480.webp 480w, /images/booking-still-800.webp 800w, /images/booking-still-1200.webp 1200w, /images/booking-still-1800.webp 1800w, /images/booking-still-2400.webp 2400w",
-    "color": "#c8a898"
-  },
   "gal-autumn-tortoise": {
     "width": 2400,
     "height": 3600,
