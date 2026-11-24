@@ -11,6 +11,7 @@ import {
   nailPlacement,
   nailWidthFor,
   PREVIEW_DIGIT,
+  RING_OUTER_WEB,
 } from './anatomy';
 import { Nail, StudioDefs } from './Nail';
 import type { SkinTone } from './skin';
@@ -28,7 +29,7 @@ const FRAMES = DIGITS.map(digitFrame);
 const WEBS = [1, 2, 3].map((i) => {
   const a = DIGITS[i];
   const b = DIGITS[i + 1];
-  const pa = FRAMES[i].at(a.web);
+  const pa = FRAMES[i].at(i === 3 ? RING_OUTER_WEB : a.web);
   const pb = FRAMES[i + 1].at(b.web);
   return { x: (pa[0] + pb[0]) / 2, y: (pa[1] + pb[1]) / 2 + 4, angle: (a.angle + b.angle) / 2 };
 });
