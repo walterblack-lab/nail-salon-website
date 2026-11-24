@@ -27,7 +27,6 @@ npm run images    # regenerate optimised photos after changing /images-src
 | Salon name, address, phone, email, Instagram, opening hours | `src/content/site.ts` |
 | Same details for search engines (structured data, canonical URL, OG tags) | `index.html` |
 | Prices, durations, panel colours and photos per service | `src/content/services.ts` |
-| Shades in the "pick your shade" band | `src/content/shades.ts` |
 | Photos (all temporary Unsplash images) | `images-src/`, see below |
 | Booking backend | `.env`, see below |
 

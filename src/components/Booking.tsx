@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
-import { Phone, X } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageContext';
 import { services, type ServiceId } from '../content/services';
 import { site } from '../content/site';
@@ -31,19 +31,17 @@ const chipColors: Record<string, string> = {
 
 interface BookingProps {
   preselect: { id: ServiceId; nonce: number } | null;
-  shadeRequest: { name: string; nonce: number } | null;
   /** A nail-studio design summary; it is written into the message field for the visitor to review. */
   designNote?: { text: string; nonce: number } | null;
 }
 
-export function Booking({ preselect, shadeRequest, designNote = null }: BookingProps) {
+export function Booking({ preselect, designNote = null }: BookingProps) {
   const { t, lang } = useI18n();
   const f = t.booking.form;
   const uid = useId();
   const id = (name: string) => `${uid}-${name}`;
 
   const [values, setValues] = useState<Values>(empty);
-  const [shade, setShade] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [submitted, setSubmitted] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
@@ -57,7 +55,7 @@ export function Booking({ preselect, shadeRequest, designNote = null }: BookingP
   const pickedDate = parseDate(values.date);
   const closedDay = Boolean(pickedDate && !isOpenOn(pickedDate));
 
-  // Selections made elsewhere on the page ("Book this", "Book with this shade")
+  // Selections made elsewhere on the page ("Book this", "Book with this design")
   // are applied while rendering when the request changes, per React docs.
   const [seenPreselect, setSeenPreselect] = useState<number | null>(null);
   if (preselect && preselect.nonce !== seenPreselect) {
@@ -65,12 +63,6 @@ export function Booking({ preselect, shadeRequest, designNote = null }: BookingP
     setStatus('idle');
     setValues((v) => ({ ...v, service: preselect.id }));
     setErrors((e) => ({ ...e, service: undefined }));
-  }
-  const [seenShade, setSeenShade] = useState<number | null>(null);
-  if (shadeRequest && shadeRequest.nonce !== seenShade) {
-    setSeenShade(shadeRequest.nonce);
-    setStatus('idle');
-    setShade(shadeRequest.name);
   }
   const [seenDesign, setSeenDesign] = useState<number | null>(null);
   const [lastDesignText, setLastDesignText] = useState<string | null>(null);
@@ -156,7 +148,6 @@ export function Booking({ preselect, shadeRequest, designNote = null }: BookingP
       date: values.date,
       time: values.time,
       message: values.message.trim(),
-      shade: shade ?? undefined,
       lang,
     };
     setLastRequest(request);
@@ -165,7 +156,6 @@ export function Booking({ preselect, shadeRequest, designNote = null }: BookingP
     setStatus(result.status);
     if (result.status === 'sent') {
       setValues(empty);
-      setShade(null);
       setSubmitted(false);
     }
   };
@@ -183,7 +173,6 @@ export function Booking({ preselect, shadeRequest, designNote = null }: BookingP
       `${f.service} ${r.serviceLabel}`,
       `${f.date} ${dateText}`,
       `${f.time} ${r.time}`,
-      r.shade ? f.shadeLine(r.shade) : '',
       r.message ? `\n${f.message}:\n${r.message}` : '',
     ].filter((line, i) => line !== '' || i === 1);
     return `mailto:${site.email}?subject=${encodeURIComponent(t.booking.mail.subject(r.name))}&body=${encodeURIComponent(lines.join('\n'))}`;
@@ -390,15 +379,6 @@ export function Booking({ preselect, shadeRequest, designNote = null }: BookingP
                 <label htmlFor={id('message')}>
                   {f.message} <span className="field__optional">({f.optional})</span>
                 </label>
-                {shade && (
-                  <p className="shade-chip">
-                    <NailMark size={16} color="var(--plum)" />
-                    {f.shadeLine(shade)}
-                    <button type="button" onClick={() => setShade(null)} aria-label={`${f.shadeLine(shade)}: ×`}>
-                      <X size={14} strokeWidth={2.5} aria-hidden="true" />
-                    </button>
-                  </p>
-                )}
                 <textarea
                   ref={messageRef}
                   id={id('message')}

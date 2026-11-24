@@ -26,7 +26,7 @@ export function Header() {
 
   // Highlight the nav link of the section currently in view.
   useEffect(() => {
-    const els = [...sections, 'shades', 'booking'].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const els = [...sections, 'booking'].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) if (e.isIntersecting) setActive(e.target.id);

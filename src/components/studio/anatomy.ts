@@ -108,23 +108,24 @@ export const DIGITS: Digit[] = [
     joints: [0.49, 0.78],
     web: 0.27,
   },
-  // little
+  // little: its knuckle sits lower and a touch inwards; it angles out gently
+  // and curls back towards the ring finger, its tip near that finger's last joint
   {
-    root: [390, 455],
-    angle: 13,
-    len: 214,
-    bend: -7,
+    root: [387, 463],
+    angle: 9,
+    len: 204,
+    bend: -5,
     widths: [
-      [0, 22],
-      [0.22, 20.2],
-      [0.49, 19.4],
-      [0.63, 17.9],
-      [0.78, 17.6],
-      [0.9, 17],
-      [1, 16.2],
+      [0, 21.5],
+      [0.22, 19.9],
+      [0.49, 19],
+      [0.63, 17.7],
+      [0.78, 17.3],
+      [0.9, 16.7],
+      [1, 16],
     ],
-    joints: [0.49, 0.78],
-    web: 0.32,
+    joints: [0.47, 0.77],
+    web: 0.3,
   },
 ];
 
@@ -221,11 +222,17 @@ export function smoothPath(points: Pt[], closed = true, tension = 1) {
 }
 
 /** A web between two neighbouring fingers: a soft U a little below where they part. */
-function web(a: Digit, b: Digit): Pt[] {
+function web(a: Digit, b: Digit, uneven = false): Pt[] {
   const fa = digitFrame(a);
   const fb = digitFrame(b);
   const pa = add(fa.at(a.web), fa.normal(a.web), fa.halfWidth(a.web));
   const pb = add(fb.at(b.web), fb.normal(b.web), -fb.halfWidth(b.web));
+  if (uneven) {
+    // The fingers part at different heights (the little finger's knuckle sits lower):
+    // the web's lowest point tucks just under the lower finger's edge.
+    const [hi, lo] = pa[1] < pb[1] ? [pa, pb] : [pb, pa];
+    return [[lo[0] + (hi[0] - lo[0]) * 0.3, lo[1] + 5]];
+  }
   // Two points shape a rounded U rather than a slit.
   const low = Math.max(pa[1], pb[1]);
   const m: Pt = [(pa[0] + pb[0]) / 2, low + 7];
@@ -265,11 +272,14 @@ export function handOutline(): string {
   pts.push(...digitContour(middle, middle.web, middle.web));
   pts.push(...web(middle, ring));
   pts.push(...digitContour(ring, ring.web, ring.web));
-  pts.push(...web(ring, little));
-  pts.push(...digitContour(little, little.web, 0.02));
-  // Little-finger side of the palm down to the wrist
-  const base = add(fl.at(0), fl.normal(0), fl.halfWidth(0));
-  pts.push([base[0] + 7, base[1] + 44], [base[0] + 11, base[1] + 100], [base[0] + 7, base[1] + 165], [base[0] - 6, base[1] + 230], [base[0] - 22, base[1] + 290], [384, 800]);
+  pts.push(...web(ring, little, true));
+  pts.push(...digitContour(little, little.web, 0.16));
+  // Where the little finger leaves the palm: a slight waist, then its knuckle
+  const waist = add(fl.at(0.1), fl.normal(0.1), fl.halfWidth(0.1) - 0.5);
+  const knuckle = add(fl.at(-0.04), fl.normal(-0.04), fl.halfWidth(0) + 3.5);
+  pts.push(waist, knuckle);
+  // Little-finger side of the palm down to the wrist (fixed, so the palm keeps its shape)
+  pts.push([418.9, 501.1], [422.9, 557.1], [418.9, 622.1], [405.9, 687.1], [389.9, 747.1], [384, 800]);
   pts.push([310, 812]);
   return smoothPath(pts);
 }

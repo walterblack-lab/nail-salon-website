@@ -241,29 +241,6 @@
   }
 }
 
-/* Chosen shade, carried over from the shade picker */
-.shade-chip {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.6rem;
-  padding: 0.3rem 0.35rem 0.3rem 0.85rem;
-  border-radius: var(--r-pill);
-  background: var(--butter);
-  font-size: 0.88rem;
-  font-weight: 800;
-}
-.shade-chip button {
-  display: grid;
-  place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  border: 0;
-  border-radius: 50%;
-  background: var(--paper);
-}
-
 /* Consent checkbox */
 .field--check {
   display: grid;

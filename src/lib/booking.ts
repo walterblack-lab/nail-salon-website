@@ -22,7 +22,6 @@ export interface BookingRequest {
   date: string; // YYYY-MM-DD
   time: string; // HH:MM
   message: string;
-  shade?: string; // shade picked in the "pick your shade" band, if any
   lang: Lang;
 }
 
