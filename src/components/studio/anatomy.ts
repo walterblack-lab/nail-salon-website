@@ -108,24 +108,23 @@ export const DIGITS: Digit[] = [
     joints: [0.49, 0.78],
     web: 0.27,
   },
-  // little: grows from the palm's outer corner, lower than the ring finger
-  // (the knuckles arc down), angled outwards as on a relaxed, open hand
+  // little
   {
-    root: [400, 477],
-    angle: 20,
-    len: 198,
-    bend: -3,
+    root: [390, 455],
+    angle: 13,
+    len: 214,
+    bend: -7,
     widths: [
-      [0, 21.5],
-      [0.22, 19.9],
-      [0.49, 19],
-      [0.63, 17.7],
-      [0.78, 17.3],
-      [0.9, 16.7],
-      [1, 16],
+      [0, 22],
+      [0.22, 20.2],
+      [0.49, 19.4],
+      [0.63, 17.9],
+      [0.78, 17.6],
+      [0.9, 17],
+      [1, 16.2],
     ],
-    joints: [0.47, 0.77],
-    web: 0.3,
+    joints: [0.49, 0.78],
+    web: 0.32,
   },
 ];
 
@@ -222,17 +221,11 @@ export function smoothPath(points: Pt[], closed = true, tension = 1) {
 }
 
 /** A web between two neighbouring fingers: a soft U a little below where they part. */
-function web(a: Digit, b: Digit, uneven = false, ta = a.web): Pt[] {
+function web(a: Digit, b: Digit): Pt[] {
   const fa = digitFrame(a);
   const fb = digitFrame(b);
-  const pa = add(fa.at(ta), fa.normal(ta), fa.halfWidth(ta));
+  const pa = add(fa.at(a.web), fa.normal(a.web), fa.halfWidth(a.web));
   const pb = add(fb.at(b.web), fb.normal(b.web), -fb.halfWidth(b.web));
-  if (uneven) {
-    // The fingers part at different heights (the little finger's knuckle sits lower):
-    // the web's lowest point tucks just under the lower finger's edge.
-    const [hi, lo] = pa[1] < pb[1] ? [pa, pb] : [pb, pa];
-    return [[lo[0] + (hi[0] - lo[0]) * 0.3, lo[1] + 5]];
-  }
   // Two points shape a rounded U rather than a slit.
   const low = Math.max(pa[1], pb[1]);
   const m: Pt = [(pa[0] + pb[0]) / 2, low + 7];
@@ -243,17 +236,12 @@ function web(a: Digit, b: Digit, uneven = false, ta = a.web): Pt[] {
   ];
 }
 
-/**
- * The ring finger parts from the little finger lower than from the middle
- * finger (the knuckles arc down), so its outer edge runs further down.
- */
-export const RING_OUTER_WEB = 0.15;
-
 /** The whole hand as one closed outline. */
 export function handOutline(): string {
   const [thumb, index, middle, ring, little] = DIGITS;
   const ft = digitFrame(thumb);
   const fi = digitFrame(index);
+  const fl = digitFrame(little);
 
   const pts: Pt[] = [];
   // Wrist, thumb side, rising into the thenar pad
@@ -276,14 +264,12 @@ export function handOutline(): string {
   pts.push(...web(index, middle));
   pts.push(...digitContour(middle, middle.web, middle.web));
   pts.push(...web(middle, ring));
-  pts.push(...digitContour(ring, ring.web, RING_OUTER_WEB));
-  pts.push(...web(ring, little, true, RING_OUTER_WEB));
-  // The little finger's outer edge runs straight into the palm's outer corner
-  pts.push(...digitContour(little, little.web, 0));
-  // The outer palm (hypothenar): below the little finger's knuckle the edge eases
-  // in slightly, swells around mid-palm, then narrows into the wrist
-  // (evenly spaced points, so the curve joins the finger without a kink)
-  pts.push([418.6, 497], [418.2, 511], [419, 526], [421.5, 547], [425, 571], [429.5, 598], [432.5, 628], [430, 684], [415, 739], [397, 784], [390, 800]);
+  pts.push(...digitContour(ring, ring.web, ring.web));
+  pts.push(...web(ring, little));
+  pts.push(...digitContour(little, little.web, 0.02));
+  // Little-finger side of the palm down to the wrist
+  const base = add(fl.at(0), fl.normal(0), fl.halfWidth(0));
+  pts.push([base[0] + 7, base[1] + 44], [base[0] + 11, base[1] + 100], [base[0] + 7, base[1] + 165], [base[0] - 6, base[1] + 230], [base[0] - 22, base[1] + 290], [384, 800]);
   pts.push([310, 812]);
   return smoothPath(pts);
 }
